@@ -1,9 +1,9 @@
-package com.inlcc.flyingdata.core.sync;
+package com.flyingdata.core.sync;
 
-import com.inlcc.flyingdata.core.exception.FlyingDataException;
-import com.inlcc.flyingdata.core.handler.DataSyncHandler;
-import com.inlcc.flyingdata.core.listener.DataSyncListener;
-import com.inlcc.flyingdata.core.storage.DataSyncResultStorage;
+import com.flyingdata.core.exception.FlyingDataException;
+import com.flyingdata.core.handler.DataSyncHandler;
+import com.flyingdata.core.listener.DataSyncListener;
+import com.flyingdata.core.storage.DataSyncResultStorage;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class DataSynchronizer {
 
     /**
      * 数据处理端
-     *  负责数据处理，可以有0个或多个
+     * 负责数据处理，可以有0个或多个
      */
     private List<DataSyncHandler> handlers = new LinkedList<>();
 
@@ -46,11 +46,18 @@ public class DataSynchronizer {
     }
 
     public void start() {
-        listener.init(handlers, resultStorages);
+        handlers.forEach(dataSyncHandler -> listener.getHandlers().add(dataSyncHandler));
+        resultStorages.forEach(resultStorage -> listener.getResultStorages().add(resultStorage));
         if (executor == null) {
+            // 设置默认线程池
             executor = DataSyncExecutor.executor;
         }
+        // 提交监听任务
         executor.submit(listener);
+    }
+
+    public void stop() {
+        listener.stop();
     }
 
 
@@ -70,6 +77,11 @@ public class DataSynchronizer {
 
         public DataSynchronizerBuilder addResultStorage(DataSyncResultStorage resultStorage) {
             this.synchronizer.resultStorages.add(resultStorage);
+            return this;
+        }
+
+        public DataSynchronizerBuilder setExecutorPool(ExecutorService executorPool) {
+            this.synchronizer.executor = executorPool;
             return this;
         }
 

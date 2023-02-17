@@ -1,4 +1,4 @@
-package com.inlcc.flyingdata.core.exception;
+package com.flyingdata.core.exception;
 
 /**
  * Created by IntelliJ IDEA.
