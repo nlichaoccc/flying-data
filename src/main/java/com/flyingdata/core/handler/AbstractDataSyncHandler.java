@@ -74,7 +74,8 @@ public abstract class AbstractDataSyncHandler implements DataSyncHandler{
         List<SyncResult> results = new ArrayList<>();
 
         for (int i = 0; i < message.getData().size(); i++) {
-            Map<String, Object> old = message.getOld().get(i);
+            // 删除的数据在data里存放
+            Map<String, Object> old = message.getData().get(i);
 
             SyncResult syncResult = createDeleteResult(CreateDeleteResultParam.builder()
                     .database(message.getDatabase())

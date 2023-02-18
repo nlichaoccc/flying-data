@@ -2,8 +2,6 @@ package com.flyingdata.core.handler;
 
 import com.flyingdata.core.result.SyncResult;
 
-import java.util.HashMap;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -29,7 +27,7 @@ public class DefaultDataSyncHandler extends AbstractDataSyncHandler {
     @Override
     public SyncResult createDeleteResult(CreateDeleteResultParam param) {
         SyncResult syncResult = new SyncResult();
-        syncResult.setData(new HashMap<>(2));
+        syncResult.setData(param.getOld());
         return syncResult;
     }
 }

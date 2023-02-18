@@ -38,7 +38,7 @@ class SyncTest {
 
         // 最多执行1分钟，防止忘记关闭进程
         try {
-            Thread.sleep(60000L);
+            Thread.sleep(600000L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

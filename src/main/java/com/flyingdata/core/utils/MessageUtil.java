@@ -167,6 +167,9 @@ public class MessageUtil {
     private static List<Map<String, Object>> changeRows(String table, List<Map<String, String>> rows,
                                                         Map<String, Integer> sqlTypes, Map<String, String> mysqlTypes) {
         List<Map<String, Object>> result = new ArrayList<>();
+        if (rows == null) {
+            return result;
+        }
         for (Map<String, String> row : rows) {
             Map<String, Object> resultRow = new LinkedHashMap<>();
             for (Map.Entry<String, String> entry : row.entrySet()) {
