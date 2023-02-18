@@ -21,12 +21,12 @@ class SyncTest {
         syncProperties.setSubscribeType("kafka");
 
         CanalConsumeProperties canalConsumeProperties = new CanalConsumeProperties();
-        canalConsumeProperties.setHost("hk-host.inlcc.cn");
-        canalConsumeProperties.setPort(11111);
+//        canalConsumeProperties.setHost("localhost");
+//        canalConsumeProperties.setPort(11111);
         canalConsumeProperties.setDestination("user");
         canalConsumeProperties.setPartition(0);
         canalConsumeProperties.setGroupId("g1");
-        canalConsumeProperties.setKafkaServers("ka-host.inlcc.cn:9092");
+        canalConsumeProperties.setKafkaServers("localhost:9092");
         syncProperties.setConsume(canalConsumeProperties);
 
         syncProperties.setHandler(DefaultDataSyncHandler.class);
