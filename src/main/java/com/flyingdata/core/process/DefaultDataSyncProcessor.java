@@ -2,6 +2,7 @@ package com.flyingdata.core.process;
 
 import com.flyingdata.core.context.DataSyncContext;
 import com.flyingdata.core.handler.DataSyncHandler;
+import com.flyingdata.core.handler.DefaultDataSyncHandler;
 import com.flyingdata.core.rdb.RdbMessage;
 import com.flyingdata.core.result.SyncResult;
 import com.flyingdata.core.storage.DataSyncResultStorage;
@@ -33,7 +34,7 @@ public class DefaultDataSyncProcessor implements DataSyncProcessor {
     private DataSyncResultStorage storage;
 
     public DefaultDataSyncProcessor(DataSyncHandler handler, DataSyncResultStorage storage) {
-        this.handler = handler;
+        this.handler = handler == null ? new DefaultDataSyncHandler() : handler;
         this.storage = storage;
     }
 
@@ -44,28 +45,24 @@ public class DefaultDataSyncProcessor implements DataSyncProcessor {
         List<SyncResult> results = new ArrayList<>();
         System.out.println("=======================================================================================");
 
-        if (handler != null) {
-            for (RdbMessage rdbMessage : context.getRdbMessages()) {
-                System.out.println(FastjsonUtil.toJSONString(rdbMessage));
+        for (RdbMessage rdbMessage : context.getRdbMessages()) {
+            System.out.println(FastjsonUtil.toJSONString(rdbMessage));
 
-                if (rdbMessage.getIsDdl()) { // DDL语句跳过
-                    continue;
-                }
-
-                String rdbMessageType = rdbMessage.getType();
-                // INSERT UPDATE DELETE
-                if ("INSERT".equalsIgnoreCase(rdbMessageType)) {
-                    results.addAll(Optional.ofNullable(handler.insert(rdbMessage)).orElse(List.of()));
-                } else if ("UPDATE".equalsIgnoreCase(rdbMessageType)) {
-                    results.addAll(Optional.ofNullable(handler.update(rdbMessage)).orElse(List.of()));
-                } else if ("DELETE".equalsIgnoreCase(rdbMessageType)) {
-                    results.addAll(Optional.ofNullable(handler.delete(rdbMessage)).orElse(List.of()));
-                } else {
-                    // ignore
-                }
+            if (rdbMessage.getIsDdl()) { // DDL语句跳过
+                continue;
             }
-        } else {
-            // 填充results
+
+            String rdbMessageType = rdbMessage.getType();
+            // INSERT UPDATE DELETE
+            if ("INSERT".equalsIgnoreCase(rdbMessageType)) {
+                results.addAll(Optional.ofNullable(handler.insert(rdbMessage)).orElse(List.of()));
+            } else if ("UPDATE".equalsIgnoreCase(rdbMessageType)) {
+                results.addAll(Optional.ofNullable(handler.update(rdbMessage)).orElse(List.of()));
+            } else if ("DELETE".equalsIgnoreCase(rdbMessageType)) {
+                results.addAll(Optional.ofNullable(handler.delete(rdbMessage)).orElse(List.of()));
+            } else {
+                // ignore
+            }
         }
 
 
