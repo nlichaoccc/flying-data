@@ -1,9 +1,11 @@
 package com.flyingdata.core.listener;
 
+import com.flyingdata.core.config.FlyingDataSyncProperties;
 import com.flyingdata.core.entry.DataSyncContext;
 import com.flyingdata.core.handler.DataSyncHandler;
 import com.flyingdata.core.storage.DataSyncResultStorage;
 import com.flyingdata.core.sync.DataSyncExecutor;
+import com.flyingdata.core.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,19 +39,17 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
      */
     private List<DataSyncResultStorage> resultStorages;
 
-    @Override
-    public List<DataSyncHandler> getHandlers() {
-        return handlers;
-    }
-
-    public List<DataSyncResultStorage> getResultStorages() {
-        return resultStorages;
-    }
-
     public AbstractCanalDataSyncListener() {
         this.handlers = new LinkedList<>();
         this.resultStorages = new LinkedList<>();
     }
+
+    @Override
+    public void init(FlyingDataSyncProperties properties) {
+        properties.getHandlers().forEach(h -> this.handlers.add(ObjectUtil.newNoArgInstance(h)));
+        properties.getResultStorages().forEach(r -> this.resultStorages.add(ObjectUtil.newNoArgInstance(r)));
+    }
+
 
     @Override
     public void run() {
@@ -73,7 +73,7 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
                         logger.error("{} disconnect error!", this.getClass().getSimpleName(), e);
                     } finally {
                         try {
-                            Thread.sleep(500L); // 休眠500ms，重新尝试连接
+                            Thread.sleep(200L); // 休眠200ms，重新尝试连接
                         } catch (InterruptedException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -86,7 +86,7 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
                 try {
 
                     // 数据为空
-                    if (context.getRdbMessages() == null) {
+                    if (context.getRdbMessages() == null || context.getRdbMessages().isEmpty()) {
                         continue;
                     }
 
@@ -111,6 +111,12 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
 
         }
     }
+
+    @Override
+    public void stop() {
+        running = false;
+    }
+
     protected abstract void connect();
 
     protected abstract DataSyncContext request();
@@ -120,11 +126,6 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
     protected abstract void rollback();
 
     protected abstract void disconnect();
-
-    @Override
-    public void stop() {
-        running = false;
-    }
 
 
 }
