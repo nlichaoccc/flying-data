@@ -27,7 +27,7 @@ public class FlyingDataSyncProperties {
      * 数据输入端
      *  负责监听上游数据，并构建数据处理易读的上下文对象（DataSyncContext）
      */
-    private CanalConnectProperties connect;
+    private CanalConsumeProperties consume;
 
     private Class<? extends DataSyncListener> listener;
 

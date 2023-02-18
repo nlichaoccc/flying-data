@@ -9,7 +9,7 @@ import lombok.Data;
  * @since 2023/2/18
  */
 @Data
-public class CanalConnectProperties {
+public class CanalConsumeProperties {
 
     // ------------------------------ 公共参数 begin ----------------------------------------
     /**

@@ -2,7 +2,7 @@ package com.flyingdata.core.listener;
 
 import com.alibaba.otter.canal.client.kafka.KafkaCanalConnector;
 import com.alibaba.otter.canal.protocol.FlatMessage;
-import com.flyingdata.core.config.CanalConnectProperties;
+import com.flyingdata.core.config.CanalConsumeProperties;
 import com.flyingdata.core.config.FlyingDataSyncProperties;
 import com.flyingdata.core.entry.DataSyncContext;
 import com.flyingdata.core.utils.MessageUtil;
@@ -24,28 +24,19 @@ public class KafkaFlatMessageCanalDataSyncListener extends AbstractCanalDataSync
 
     private KafkaCanalConnector connector;
 
-    private CanalConnectProperties connectProperties;
-
-//    private String  topic     = "user";
-//    private Integer partition = 0;
-//    private String  groupId   = "group";
-//    private String  servers   = "ka-host.inlcc.cn:9092";
-//    private String  zkServers = "ka-host.inlcc.cn:2181";
-//    private Integer batchSize = null;
-//    private long timeoutMillis = 100L;
-
+    private CanalConsumeProperties consumeProperties;
 
     @Override
     public void init(FlyingDataSyncProperties properties) {
         super.init(properties);
-        connectProperties = properties.getConnect();
+        consumeProperties = properties.getConsume();
     }
 
 
     @Override
     protected void connect() {
         logger.info("CanalKafkaDataSyncListener connect begin.");
-        connector = new KafkaCanalConnector(connectProperties.getKafkaServers(), connectProperties.getDestination(), connectProperties.getPartition(), connectProperties.getGroupId(), connectProperties.getBatchSize(), true);
+        connector = new KafkaCanalConnector(consumeProperties.getKafkaServers(), consumeProperties.getDestination(), consumeProperties.getPartition(), consumeProperties.getGroupId(), consumeProperties.getBatchSize(), true);
         connector.connect();
         connector.subscribe();
         logger.info("CanalKafkaDataSyncListener connect end.");
@@ -61,8 +52,8 @@ public class KafkaFlatMessageCanalDataSyncListener extends AbstractCanalDataSync
 //        list.forEach(message -> rdbMessages.addAll(MessageUtil.message2RdbMessage(topic, groupId, message)));
 //        dataSyncEntry.setRdbMessages(rdbMessages);
 
-        List<FlatMessage> flatMessages = connector.getFlatList(connectProperties.getTimeoutMillis(), TimeUnit.MILLISECONDS);
-        dataSyncContext.setRdbMessages(MessageUtil.flatMessage2RdbMessage(connectProperties.getDestination(), connectProperties.getGroupId(), flatMessages));
+        List<FlatMessage> flatMessages = connector.getFlatList(consumeProperties.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+        dataSyncContext.setRdbMessages(MessageUtil.flatMessage2RdbMessage(consumeProperties.getDestination(), consumeProperties.getGroupId(), flatMessages));
 
         return dataSyncContext;
     }
