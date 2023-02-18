@@ -5,9 +5,6 @@ import com.flyingdata.core.listener.DataSyncListener;
 import com.flyingdata.core.storage.DataSyncResultStorage;
 import lombok.Data;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  *
@@ -33,14 +30,14 @@ public class FlyingDataSyncProperties {
 
     /**
      * 数据处理端
-     * 负责数据处理，可以有0个或多个
+     * 负责数据处理
      */
-    private List<Class<? extends DataSyncHandler>> handlers = new LinkedList<>();
+    private Class<? extends DataSyncHandler> handler;
 
     /**
      * 结果存储器
      *  负责存储数据处理后的结果，可以有0个或多个
      */
-    private List<Class<? extends DataSyncResultStorage>> resultStorages = new LinkedList<>();
+    private Class<? extends DataSyncResultStorage> storage;
 
 }

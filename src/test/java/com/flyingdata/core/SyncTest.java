@@ -3,10 +3,8 @@ package com.flyingdata.core;
 
 import com.flyingdata.core.config.CanalConsumeProperties;
 import com.flyingdata.core.config.FlyingDataSyncProperties;
-import com.flyingdata.core.handler.PrintJsonDataSyncHandler;
+import com.flyingdata.core.handler.DefaultDataSyncHandler;
 import com.flyingdata.core.sync.DataSynchronizer;
-
-import java.util.LinkedList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,13 +29,21 @@ class SyncTest {
         canalConsumeProperties.setKafkaServers("ka-host.inlcc.cn:9092");
         syncProperties.setConsume(canalConsumeProperties);
 
-        syncProperties.setHandlers(new LinkedList<>());
-        syncProperties.getHandlers().add(PrintJsonDataSyncHandler.class);
+        syncProperties.setHandler(DefaultDataSyncHandler.class);
 
         DataSynchronizer synchronizer = new DataSynchronizer(syncProperties);
 
         synchronizer.start();
 
+
+        // 最多执行1分钟，防止忘记关闭进程
+        try {
+            Thread.sleep(60000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.exit(0);
     }
 
 }

@@ -1,6 +1,9 @@
 package com.flyingdata.core.handler;
 
-import com.flyingdata.core.entry.DataSyncContext;
+import com.flyingdata.core.rdb.RdbMessage;
+import com.flyingdata.core.result.SyncResult;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +13,8 @@ import com.flyingdata.core.entry.DataSyncContext;
  */
 public interface DataSyncHandler {
 
-    void handle(DataSyncContext context);
-
+    List<SyncResult> insert(RdbMessage message);
+    List<SyncResult> update(RdbMessage message);
+    List<SyncResult> delete(RdbMessage message);
 
 }

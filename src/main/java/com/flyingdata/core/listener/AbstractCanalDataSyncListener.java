@@ -1,18 +1,12 @@
 package com.flyingdata.core.listener;
 
 import com.flyingdata.core.config.FlyingDataSyncProperties;
-import com.flyingdata.core.entry.DataSyncContext;
-import com.flyingdata.core.handler.DataSyncHandler;
-import com.flyingdata.core.storage.DataSyncResultStorage;
+import com.flyingdata.core.context.DataSyncContext;
+import com.flyingdata.core.process.DefaultDataSyncProcessor;
 import com.flyingdata.core.sync.DataSyncExecutor;
 import com.flyingdata.core.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
-
-
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,28 +20,15 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
 
     private boolean running = true;
 
-    /**
-     * 数据处理端
-     * 负责数据处理，可以有0个或多个
-     */
-    private List<DataSyncHandler> handlers;
 
-
-    /**
-     * 结果存储器
-     *  负责存储数据处理后的结果，可以有0个或多个
-     */
-    private List<DataSyncResultStorage> resultStorages;
+    private DefaultDataSyncProcessor processor;
 
     public AbstractCanalDataSyncListener() {
-        this.handlers = new LinkedList<>();
-        this.resultStorages = new LinkedList<>();
     }
 
     @Override
     public void init(FlyingDataSyncProperties properties) {
-        properties.getHandlers().forEach(h -> this.handlers.add(ObjectUtil.newNoArgInstance(h)));
-        properties.getResultStorages().forEach(r -> this.resultStorages.add(ObjectUtil.newNoArgInstance(r)));
+        this.processor = new DefaultDataSyncProcessor(ObjectUtil.newNoArgInstance(properties.getHandler()), ObjectUtil.newNoArgInstance(properties.getStorage()));
     }
 
 
@@ -90,15 +71,8 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
                         continue;
                     }
 
-                    // 数据加工
-                    for (DataSyncHandler handler : handlers) {
-                        handler.handle(context);
-                    }
-
-                    // 结果存储
-                    for (DataSyncResultStorage resultStorage : resultStorages) {
-                        resultStorage.store(context);
-                    }
+                    // 数据处理
+                    processor.process(context);
 
                     ack(context);
 
@@ -114,6 +88,9 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
 
     @Override
     public void stop() {
+        if (!running) {
+            return;
+        }
         running = false;
     }
 

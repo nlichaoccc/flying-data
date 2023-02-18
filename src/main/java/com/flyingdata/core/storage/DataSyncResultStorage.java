@@ -1,6 +1,8 @@
 package com.flyingdata.core.storage;
 
-import com.flyingdata.core.entry.DataSyncContext;
+import com.flyingdata.core.result.SyncResult;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,6 +11,6 @@ import com.flyingdata.core.entry.DataSyncContext;
  * @since 2023/2/13
  */
 public interface DataSyncResultStorage {
-    void store(DataSyncContext context);
+    void store(List<SyncResult> results);
 
 }

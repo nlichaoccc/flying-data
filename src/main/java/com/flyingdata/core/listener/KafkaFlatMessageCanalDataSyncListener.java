@@ -4,7 +4,7 @@ import com.alibaba.otter.canal.client.kafka.KafkaCanalConnector;
 import com.alibaba.otter.canal.protocol.FlatMessage;
 import com.flyingdata.core.config.CanalConsumeProperties;
 import com.flyingdata.core.config.FlyingDataSyncProperties;
-import com.flyingdata.core.entry.DataSyncContext;
+import com.flyingdata.core.context.DataSyncContext;
 import com.flyingdata.core.utils.MessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +47,7 @@ public class KafkaFlatMessageCanalDataSyncListener extends AbstractCanalDataSync
 
         DataSyncContext dataSyncContext = new DataSyncContext();
 
-//        List<Message> list = connector.getList(timeoutMillis, TimeUnit.MILLISECONDS);
-//        List<RdbMessage> rdbMessages = new ArrayList<>();
-//        list.forEach(message -> rdbMessages.addAll(MessageUtil.message2RdbMessage(topic, groupId, message)));
-//        dataSyncEntry.setRdbMessages(rdbMessages);
-
-        List<FlatMessage> flatMessages = connector.getFlatList(consumeProperties.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+        List<FlatMessage> flatMessages = connector.getFlatListWithoutAck(consumeProperties.getTimeoutMillis(), TimeUnit.MILLISECONDS);
         dataSyncContext.setRdbMessages(MessageUtil.flatMessage2RdbMessage(consumeProperties.getDestination(), consumeProperties.getGroupId(), flatMessages));
 
         return dataSyncContext;

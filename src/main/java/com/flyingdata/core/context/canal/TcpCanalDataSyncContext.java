@@ -1,6 +1,6 @@
-package com.flyingdata.core.entry.canal;
+package com.flyingdata.core.context.canal;
 
-import com.flyingdata.core.entry.DataSyncContext;
+import com.flyingdata.core.context.DataSyncContext;
 import lombok.Data;
 
 /**
