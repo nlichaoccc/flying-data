@@ -3,6 +3,7 @@ package com.flyingdata.core.listener;
 import com.flyingdata.core.config.FlyingDataSyncProperties;
 import com.flyingdata.core.context.DataSyncContext;
 import com.flyingdata.core.process.DefaultDataSyncProcessor;
+import com.flyingdata.core.storage.DataSyncResultStorage;
 import com.flyingdata.core.sync.DataSyncExecutor;
 import com.flyingdata.core.utils.ObjectUtil;
 import org.slf4j.Logger;
@@ -28,7 +29,10 @@ public abstract class AbstractCanalDataSyncListener implements DataSyncListener 
 
     @Override
     public void init(FlyingDataSyncProperties properties) {
-        this.processor = new DefaultDataSyncProcessor(ObjectUtil.newNoArgInstance(properties.getHandler()), ObjectUtil.newNoArgInstance(properties.getStorage()));
+        DataSyncResultStorage storage = ObjectUtil.newNoArgInstance(properties.getStorage());
+        // 初始化结果查询器
+        storage.init(properties);
+        this.processor = new DefaultDataSyncProcessor(ObjectUtil.newNoArgInstance(properties.getHandler()), storage);
     }
 
 

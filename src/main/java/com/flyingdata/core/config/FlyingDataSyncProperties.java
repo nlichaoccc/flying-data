@@ -40,4 +40,6 @@ public class FlyingDataSyncProperties {
      */
     private Class<? extends DataSyncResultStorage> storage;
 
+    private StorageProperties storageProperties;
+
 }

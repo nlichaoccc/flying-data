@@ -5,6 +5,7 @@ import com.flyingdata.core.config.CanalConsumeProperties;
 import com.flyingdata.core.config.FlyingDataSyncProperties;
 import com.flyingdata.core.handler.DefaultDataSyncHandler;
 import com.flyingdata.core.sync.DataSynchronizer;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,9 +13,10 @@ import com.flyingdata.core.sync.DataSynchronizer;
  * @author nlichaoccc
  * @since 2023/2/13
  */
-class SyncTest {
+public class TestSync {
 
-    public static void main(String[] args) {
+    @Test
+    public void testSync() {
 
         FlyingDataSyncProperties syncProperties = new FlyingDataSyncProperties();
 
@@ -38,7 +40,7 @@ class SyncTest {
 
         // 最多执行1分钟，防止忘记关闭进程
         try {
-            Thread.sleep(600000L);
+            Thread.sleep(60000L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
