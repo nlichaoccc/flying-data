@@ -7,6 +7,8 @@ import com.flyingdata.core.rdb.RdbMessage;
 import com.flyingdata.core.result.SyncResult;
 import com.flyingdata.core.storage.DataSyncResultStorage;
 import com.flyingdata.core.utils.FastjsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.Optional;
  * @since 2023/2/18
  */
 public class DefaultDataSyncProcessor implements DataSyncProcessor {
+
+    protected final static Logger logger = LoggerFactory.getLogger(DefaultDataSyncProcessor.class);
 
     /**
      * 数据处理端
@@ -43,10 +47,9 @@ public class DefaultDataSyncProcessor implements DataSyncProcessor {
 
         // 批处理
         List<SyncResult> results = new ArrayList<>();
-        System.out.println("=======================================================================================");
+        logger.info("process before data :{}", FastjsonUtil.toJSONString(context.getRdbMessages()));
 
         for (RdbMessage rdbMessage : context.getRdbMessages()) {
-            System.out.println(FastjsonUtil.toJSONString(rdbMessage));
 
             if (rdbMessage.getIsDdl()) { // DDL语句跳过
                 continue;
@@ -65,10 +68,7 @@ public class DefaultDataSyncProcessor implements DataSyncProcessor {
             }
         }
 
-
-        System.out.println("=======================================================================================");
-        System.out.println(FastjsonUtil.toJSONString(results));
-        System.out.println("=======================================================================================");
+        logger.info("process after data :{}", FastjsonUtil.toJSONString(results));
 
         if (storage != null) {
             storage.store(results);

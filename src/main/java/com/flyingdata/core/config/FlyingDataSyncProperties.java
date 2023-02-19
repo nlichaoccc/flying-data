@@ -40,6 +40,9 @@ public class FlyingDataSyncProperties {
      */
     private Class<? extends DataSyncResultStorage> storage;
 
+    /**
+     * 存储器配置信息
+     */
     private StorageProperties storageProperties;
 
 }

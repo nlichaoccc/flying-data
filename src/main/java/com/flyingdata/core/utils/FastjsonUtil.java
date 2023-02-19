@@ -1,5 +1,6 @@
 package com.flyingdata.core.utils;
 
+import co.elastic.clients.json.JsonData;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
@@ -13,5 +14,9 @@ public class FastjsonUtil {
 
     public static String toJSONString(Object o) {
         return JSON.toJSONString(o, SerializerFeature.WriteMapNullValue);
+    }
+
+    public static JsonData toEsJsonData(Object o) {
+        return JsonData.fromJson(toJSONString(o));
     }
 }

@@ -17,5 +17,6 @@ public class StorageProperties {
     private String username;
     private String password;
     private String urls;
+    private String indexName;
     private Map<String, Object> extend; // 扩展配置
 }
